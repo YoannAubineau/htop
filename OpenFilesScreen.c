@@ -178,6 +178,7 @@ void OpenFilesScreen_run(OpenFilesScreen* this) {
       }
       switch(ch) {
       case ERR:
+         OpenFilesScreen_scan(this);
          continue;
       case KEY_F(5):
          clear();
