@@ -201,6 +201,25 @@ static HandlerResult pickWithEnter(Panel* panel, int ch) {
    return IGNORED;
 }
 
+static HandlerResult selectByFirstLetter(Panel * panel, int ch) {
+   (void) panel;
+   if ('a' <= ch && ch <= 'z') {
+      Vector* vector = panel->items;
+      int itemCount = Vector_size(vector);
+      int itemIndex = panel->selected;
+      for (int i = 1; i < itemCount; i++) {
+          itemIndex = (panel->selected + i) % itemCount;
+          ListItem* item = Vector_get(vector, itemIndex);
+          char firstChar = item->value[0];
+          if (firstChar == ch) {
+             Panel_setSelected(panel, itemIndex);
+             return HANDLED;
+          }
+      }
+   }
+   return pickWithEnter(panel, ch);
+}
+
 static Object* pickFromVector(Panel* panel, Panel* list, int x, int y, const char** keyLabels, FunctionBar* prevBar, Header* header) {
    const char* fuKeys[] = {"Enter", "Esc", NULL};
    int fuEvents[] = {13, 27};
@@ -637,6 +656,7 @@ int main(int argc, char** argv) {
          Vector_sort(usersPanel->items);
          ListItem* allUsers = ListItem_new("All users", -1);
          Panel_insert(usersPanel, 0, (Object*) allUsers);
+         Panel_setEventHandler(usersPanel, selectByFirstLetter);
          const char* fuFunctions[] = {"Show    ", "Cancel ", NULL};
          ListItem* picked = (ListItem*) pickFromVector(panel, usersPanel, 20, headerHeight, fuFunctions, defaultBar, header);
          if (picked) {

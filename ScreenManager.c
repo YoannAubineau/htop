@@ -218,7 +218,6 @@ void ScreenManager_run(ScreenManager* this, Panel** lastFocus, int* lastKey) {
             goto tryRight;
          break;
       case KEY_F(10):
-      case 'q':
       case 27:
          quit = true;
          continue;
